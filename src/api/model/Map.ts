@@ -24,3 +24,19 @@ type Feature = {
     coordinates: Array<Array<[number, number, number]>>;
   };
 };
+
+export type LocationList = {
+  result: Array<Location>;
+  tod: boolean;
+};
+
+type Location = {
+  id: number;
+  stop_name: string;
+  name: string;
+  longitude: number;
+  latitude: number;
+  radius: number;
+  is_tod: number;
+  distance: number;
+};
