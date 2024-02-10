@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { geolocationJson, calcDistance } from "@/api/map";
@@ -17,6 +17,13 @@ const locations = ref<
     distance: number;
   }>
 >([]);
+
+const paginationLocations = computed(() =>
+  locations.value.filter(
+    (_, index) =>
+      index < currentPage.value * 5 && index >= (currentPage.value - 1) * 5
+  )
+);
 
 const getCurrentLocation = async () => {
   return new Promise<{ lat: number; lng: number }>((resolve) => {
@@ -42,12 +49,17 @@ onMounted(async () => {
   L.polygon(result).addTo(map);
 });
 
-const handleOnEnter = async () => {
+const addMarker = (lat: number, lng: number) => {
+  L.marker({ lat, lng }).addTo(map);
+};
+
+const handleSearch = async () => {
   if (!message.value) return;
   const coords = await getCoord(message.value);
   if (coords) {
     const result = await calcDistance(coords);
     result.forEach((location) => addMarker(location.lat, location.lng));
+    locations.value = result;
   }
 };
 
@@ -57,24 +69,24 @@ const onClickHandler = (page: number) => {
 
 const currentPage = ref(1);
 
-const addMarker = (lat: number, lng: number) => {
-  L.marker({ lat, lng }).addTo(map);
-};
+const setMapCenter = (lat: number, lng: number) => map.panTo({ lat, lng });
 </script>
 
 <template>
   <div id="map"></div>
-  <div class="search_list">
-    <p>Message is: {{ message }}</p>
-    <input
-      v-model="message"
-      placeholder="請輸入地址"
-      @keydown.enter="handleOnEnter"
-    />
+  <div class="search-list">
+    <div class="search-bar">
+      <input
+        v-model="message"
+        placeholder="請輸入地址"
+        @keydown.enter="handleSearch"
+      />
+      <button @click="handleSearch">Search</button>
+    </div>
     <div class="location-list">
       <div
         class="location-card"
-        v-for="item in locations"
+        v-for="item in paginationLocations"
         @click="setMapCenter(item.lat, item.lng)"
       >
         <div class="name">{{ `${item.stopName} | ${item.name}` }}</div>
@@ -82,7 +94,8 @@ const addMarker = (lat: number, lng: number) => {
       </div>
     </div>
     <vue-awesome-paginate
-      :total-items="50"
+      v-if="locations.length"
+      :total-items="locations.length"
       :items-per-page="5"
       :max-pages-shown="5"
       v-model="currentPage"
@@ -94,29 +107,43 @@ const addMarker = (lat: number, lng: number) => {
 <style scoped lang="scss">
 #map {
   height: 50vh;
+  width: 90vw;
 }
-.location-list {
-  margin-top: 10px;
-  display: flex;
-  gap: 5px;
-  flex-direction: column;
-  .location-card {
-    padding: 10px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    border-radius: 8px;
-    border: 1px solid #aaa;
-    .name {
-      text-align: start;
+.search-list {
+  display: grid;
+  .search-bar {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+    input {
+      flex-grow: 1;
+      padding: 5px;
     }
-    .distance {
-      text-align: end;
+  }
+  .location-list {
+    margin-top: 10px;
+    display: flex;
+    gap: 5px;
+    flex-direction: column;
+    .location-card {
+      padding: 10px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-radius: 8px;
+      border: 1px solid #aaa;
+      .name {
+        text-align: start;
+      }
+      .distance {
+        text-align: end;
+      }
     }
   }
 }
 .pagination-container {
   display: flex;
   column-gap: 10px;
+  justify-content: center;
 }
 .paginate-buttons {
   height: 40px;
