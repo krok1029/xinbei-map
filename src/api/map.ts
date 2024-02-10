@@ -19,7 +19,7 @@ const geolocationJson = async (data: string) => {
       directory: data,
     }
   );
-  const cood = MapFactory.toCood(response.data);
+  const cood = MapFactory.toCoord(response.data);
   return cood;
 };
 
