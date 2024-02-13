@@ -70,9 +70,25 @@ const onClickHandler = (page: number) => {
 const currentPage = ref(1);
 
 const setMapCenter = (lat: number, lng: number) => map.panTo({ lat, lng });
+
 </script>
 
 <template>
+  <div
+    id="g_id_onload"
+    data-client_id="9336568270-26iggqk24vkpg5ogtspegnbguji3kgsd.apps.googleusercontent.com"
+    data-callback="handleCallback"
+    data-auto_prompt="false"
+  ></div>
+  <div
+    class="g_id_signin"
+    data-type="standard"
+    data-size="large"
+    data-theme="outline"
+    data-text="sign_in_with"
+    data-shape="rectangular"
+    data-logo_alignment="left"
+  ></div>
   <div id="map"></div>
   <div class="search-list">
     <div class="search-bar">
