@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite + Vue + TS</title>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script type="module" crossorigin src="/xinbei-map/assets/index-9p4a8sJU.js"></script>
   </head>
   <body>
     <p id="profile"></p>
@@ -13,7 +14,7 @@
     <script>
       function statusChangeCallback(response) {
         console.log("statusChangeCallback");
-        console.log(response); 
+        console.log(response);
         if (response.status === "connected") {
           testAPI();
         } else {
@@ -31,19 +32,19 @@
       window.fbAsyncInit = function () {
         FB.init({
           appId: "745404454204899",
-          cookie: true,
-          xfbml: true, 
-          version: "v19.0", 
+          xfbml: true,
+          version: "v19.0",
         });
 
         FB.getLoginStatus(function (response) {
-          statusChangeCallback(response); 
+          statusChangeCallback(response);
         });
       };
 
       function testAPI() {
         console.log("Welcome!  Fetching your information.... ");
-        FB.api("/{user-id}/picture", "GET", {}, function (response) {
+        FB.api("/me/picture", function (response) {
+          console.log("picture: ", response);
         });
         FB.api("/me", function (response) {
           console.log("response: ", response);
@@ -54,21 +55,24 @@
       }
     </script>
 
-    <!-- The JS SDK Login Button -->
-
-    <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
-    </fb:login-button>
+    <div
+    class="fb-login-button"
+    data-max-rows="1"
+    data-size="large"
+    data-button-type="continue_with"
+    data-use-continue-as="true"
+    ></div>
 
     <div id="status"></div>
 
-    <!-- Load the JS SDK asynchronously -->
+
     <script
       async
       defer
       crossorigin="anonymous"
       src="https://connect.facebook.net/en_US/sdk.js"
     ></script>
-    <!-- <div id="app"></div> -->
-    <!-- <script type="module" src="/src/main.ts"></script> -->
+    
+    <div id="app"></div>
   </body>
 </html>
