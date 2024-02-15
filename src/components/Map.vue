@@ -4,8 +4,11 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { geolocationJson, calcDistance } from "@/api/map";
 import { geocoding as getCoord } from "@/api/geocoding";
+import { useGDataStore } from "@/store/gData";
 
 const message = ref("");
+const gData = useGDataStore();
+console.log(gData.photo);
 
 const locations = ref<
   Array<{
@@ -70,7 +73,6 @@ const onClickHandler = (page: number) => {
 const currentPage = ref(1);
 
 const setMapCenter = (lat: number, lng: number) => map.panTo({ lat, lng });
-
 </script>
 
 <template>

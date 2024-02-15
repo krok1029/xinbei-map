@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { useRouter } from "vue-router";
 import parseJwt from "@/util/parseJwt";
+import { useGDataStore } from "@/store/gData";
+
 const router = useRouter();
+const { setGData } = useGDataStore();
 
 function handleCredentialResponse(response: any) {
   const data = parseJwt(response.credential);
-  window.googleAccount = data;
+  setGData({ name: data.name, photo: data.picture, id: data.sub });
   router.push("/map");
   console.log(data);
 }
