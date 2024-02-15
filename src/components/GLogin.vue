@@ -1,18 +1,22 @@
 <script setup lang="ts">
 import parseJwt from "@/util/parseJwt";
 import { useRouter } from "vue-router";
-import { useGDataStore } from "@/store/gData";
+import { usePhotoStore } from "@/store/photo";
 import { GOOGLE_CLIENT_ID } from "@/const";
 
 const router = useRouter();
-const { setGData } = useGDataStore();
+const photoStore = usePhotoStore();
 
 function handleCredentialResponse(response: any) {
   const data = parseJwt(response.credential);
-  setGData({ name: data.name, photo: data.picture, id: data.sub });
-  console.log(data);
-  router.push("/facebook");
+  photoStore.setGooglePhoto({ photo: data.picture });
 }
+
+photoStore.$subscribe((_, state) => {
+  if (state.gPhoto) {
+    router.push("/facebook");
+  }
+});
 
 window.onload = function () {
   google.accounts.id.initialize({
@@ -28,7 +32,9 @@ window.onload = function () {
 </script>
 
 <template>
+  <h3>請登入Google帳號</h3>
   <div id="buttonDiv"></div>
 </template>
 
 <style scoped></style>
+@/store/photo

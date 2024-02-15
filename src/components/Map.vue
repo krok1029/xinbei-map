@@ -4,11 +4,11 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { geolocationJson, calcDistance } from "@/api/map";
 import { geocoding as getCoord } from "@/api/geocoding";
-import { useGDataStore } from "@/store/gData";
+import { usePhotoStore } from "@/store/photo";
+import Tooltip from "@/components/Tooltip.vue";
 
 const message = ref("");
-const gData = useGDataStore();
-console.log(gData.photo);
+const photo = usePhotoStore();
 
 const locations = ref<
   Array<{
@@ -39,6 +39,17 @@ const getCurrentLocation = async () => {
 
 let map: L.Map;
 
+const tootipHtml = ` <div>
+    <div>
+      Google
+      <img height="30px" width="30px" src="${photo.gPhoto}" />
+    </div>
+    <div>
+      Facebook
+      <img height="30px" width="30px" src="${photo.fPhoto}" />
+    </div>
+  </div>`;
+
 onMounted(async () => {
   map = L.map("map").setView([24.973714, 121.445266], 15);
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -49,7 +60,7 @@ onMounted(async () => {
   L.polygon(result).addTo(map);
 
   const currentLocation = await getCurrentLocation();
-  L.marker(currentLocation).bindTooltip('test').addTo(map);
+  L.marker(currentLocation).bindTooltip(tootipHtml).addTo(map);
 });
 
 const addMarker = (lat: number, lng: number) => {

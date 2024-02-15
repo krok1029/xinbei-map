@@ -3,7 +3,7 @@ import Map from "@/components/Map.vue";
 import GLogin from "@/components/GLogin.vue";
 import FLogin from "@/components/FLogin.vue";
 
-import { useGDataStore } from "@/store/gData";
+import { usePhotoStore } from "@/store/photo";
 
 const routes = [
   { path: "/", component: GLogin, name: "GLogin" },
@@ -16,11 +16,16 @@ const router = createRouter({
   routes,
 });
 
-// router.beforeEach((to, _, next) => {
-//   const gData = useGDataStore();
-//   console.log("gData", gData.photo);
-//   if (to.name == "Map" && !gData.photo) next({ name: "GLogin" });
-//   else next();
-// });
+router.beforeEach((to, _, next) => {
+  const photo = usePhotoStore();
+  if (to.name == "FLogin" && !photo.gPhoto) {
+    next({ name: "GLogin" });
+    return;
+  }
+  if (to.name == "Map" && !photo.fPhoto) {
+    next({ name: "FLogin" });
+    return;
+  } else next();
+});
 
 export default router;
