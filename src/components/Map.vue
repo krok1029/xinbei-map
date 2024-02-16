@@ -5,7 +5,6 @@ import "leaflet/dist/leaflet.css";
 import { geolocationJson, calcDistance } from "@/api/map";
 import { geocoding as getCoord } from "@/api/geocoding";
 import { usePhotoStore } from "@/store/photo";
-import Tooltip from "@/components/Tooltip.vue";
 
 const message = ref("");
 const photo = usePhotoStore();
@@ -38,6 +37,10 @@ const getCurrentLocation = async () => {
 };
 
 let map: L.Map;
+const pinIcon = L.icon({
+  iconUrl: "/xinbei-map/marker-icon-2x.png",
+  iconSize: [25, 40],
+});
 
 const tootipHtml = ` <div>
     <div>
@@ -64,7 +67,7 @@ onMounted(async () => {
 });
 
 const addMarker = (lat: number, lng: number) => {
-  L.marker({ lat, lng }).addTo(map);
+  L.marker({ lat, lng }, { icon: pinIcon }).addTo(map);
 };
 
 const handleSearch = async () => {
@@ -116,7 +119,7 @@ const setMapCenter = (lat: number, lng: number) => map.panTo({ lat, lng });
 <style scoped lang="scss">
 #map {
   height: 50vh;
-  width: 90vw;
+  width: 80vw;
 }
 .search-list {
   display: grid;
