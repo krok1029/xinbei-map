@@ -7,6 +7,10 @@ import { geocoding as getCoord } from "@/api/geocoding";
 import { usePhotoStore } from "@/store/photo";
 
 const message = ref("");
+const currentLocation = ref({
+  lat: 0,
+  lng: 0,
+});
 const photo = usePhotoStore();
 
 const locations = ref<
@@ -62,8 +66,8 @@ onMounted(async () => {
   const result = await geolocationJson("tucheng.json");
   L.polygon(result).addTo(map);
 
-  const currentLocation = await getCurrentLocation();
-  L.marker(currentLocation).bindTooltip(tootipHtml).addTo(map);
+  currentLocation.value = await getCurrentLocation();
+  L.marker(currentLocation.value).bindTooltip(tootipHtml).addTo(map);
 });
 
 const addMarker = (lat: number, lng: number) => {
@@ -83,6 +87,8 @@ const handleSearch = async () => {
 const currentPage = ref(1);
 
 const setMapCenter = (lat: number, lng: number) => map.panTo({ lat, lng });
+const locateUser = () =>
+  setMapCenter(currentLocation.value.lat, currentLocation.value.lng);
 </script>
 
 <template>
@@ -94,7 +100,8 @@ const setMapCenter = (lat: number, lng: number) => map.panTo({ lat, lng });
         placeholder="請輸入地址"
         @keydown.enter="handleSearch"
       />
-      <button @click="handleSearch">Search</button>
+      <button class="search-btn" @click="handleSearch">Search</button>
+      <button class="locate-btn" @click="locateUser">我的位置</button>
     </div>
     <div class="location-list">
       <div
@@ -130,6 +137,9 @@ const setMapCenter = (lat: number, lng: number) => map.panTo({ lat, lng });
     input {
       flex-grow: 1;
       padding: 5px;
+    }
+    button {
+      background-color: #096fb2;
     }
   }
   .location-list {
