@@ -51,10 +51,6 @@ const tootipHtml = ` <div>
       Google
       <img height="30px" width="30px" src="${photo.gPhoto}" />
     </div>
-    <div>
-      Facebook
-      <img height="30px" width="30px" src="${photo.fPhoto}" />
-    </div>
   </div>`;
 
 onMounted(async () => {

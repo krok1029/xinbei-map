@@ -14,7 +14,7 @@ function handleCredentialResponse(response: any) {
 
 photoStore.$subscribe((_, state) => {
   if (state.gPhoto) {
-    router.push("/facebook");
+    router.push("/map");
   }
 });
 
@@ -37,4 +37,3 @@ window.onload = function () {
 </template>
 
 <style scoped></style>
-@/store/photo
